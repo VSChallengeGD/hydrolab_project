@@ -1,0 +1,60 @@
+﻿{% extends 'hydrolab/base.html' %}
+
+{% block content %}
+<div class="card p-4">
+    <h2 class="mb-4">История расчетов</h2>
+    {% if user.is_superuser %}
+    <div class="alert alert-warning">
+        <strong>Режим администратора:</strong> Вы видите расчеты <u>всех</u> пользователей системы.
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <strong>Личный кабинет:</strong> Здесь отображаются только <u>ваши</u> расчеты.
+    </div>
+    {% endif %}
+    <div class="mb-3">
+        <a href="{% url 'export_csv' %}" class="btn btn-success">📥 Скачать отчет в Excel</a>
+    </div>
+    <a href="{% url 'chart' %}" class="btn btn-outline-primary mb-3">📊 Построить график</a>
+    <table class="table table-hover align-middle mt-3">
+        <thead class="table-light">
+            <tr>
+                {% if user.is_superuser %}
+                <th>Автор</th>{% endif %}
+                <th>Скважина</th>
+                <th>Глубина (м)</th>
+                <th>Расход (л/с)</th>
+                <th>Плотность (кг/м³)</th>
+                <th>ECD (кг/м³)</th>
+                <th>Дата</th>
+                <th class="text-center">Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for calc in calculations %}
+            <tr>
+                {% if user.is_superuser %}
+                <td><strong>{{ calc.user.username }}</strong></td>
+                {% endif %}
+                <td>{{ calc.well_name }}</td>
+                <td>{{ calc.depth }}</td>
+                <td>{{ calc.flow_rate }}</td>
+                <td>{{ calc.density }}</td>
+                <td class="fw-bold text-success">{{ calc.ecd|floatformat:2 }}</td>
+                <td>{{ calc.created_at|date:"d.m.Y H:i" }}</td>
+                <td class="text-center">
+                    <a href="{% url 'calc_edit' calc.pk %}" class="btn btn-sm btn-outline-primary" title="Редактировать">✏️</a>
+                    <a href="{% url 'calc_delete' calc.pk %}" class="btn btn-sm btn-outline-danger" title="Удалить">🗑️</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="{% if user.is_superuser %}8{% else %}7{% endif %}" class="text-center text-muted py-4">
+                    У вас пока нет сохраненных расчетов.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

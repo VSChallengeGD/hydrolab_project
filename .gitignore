@@ -1,0 +1,12 @@
+# Visual Studio cache
+.vs/
+
+# Виртуальное окружение
+venv_hydrolab/
+
+# База данных
+db.sqlite3
+
+# Кэш Python
+__pycache__/
+*.pyc

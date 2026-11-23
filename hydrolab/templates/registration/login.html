@@ -1,0 +1,38 @@
+{% extends 'hydrolab/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4 mt-5">
+            <h2 class="text-center mb-4">Вход в систему</h2>
+
+            <!-- Вывод ошибки, если пароль или логин неверные -->
+            {% if form.errors %}
+            <div class="alert alert-danger">
+                Неверное имя пользователя или пароль. Попробуйте снова.
+            </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label fw-bold">{{ field.label }}</label>
+                    <input type="{{ field.field.widget.input_type }}" name="{{ field.html_name }}" class="form-control" id="{{ field.id_for_label }}">
+                </div>
+                {% endfor %}
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">Войти</button>
+                </div>
+            </form>
+
+            <!-- Ссылка на регистрацию -->
+            <div class="text-center mt-3">
+                <a href="{% url 'register' %}">Нет аккаунта? Зарегистрироваться</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

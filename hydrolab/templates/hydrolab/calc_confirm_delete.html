@@ -1,0 +1,17 @@
+{% extends 'hydrolab/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4 mt-5 text-center border-danger">
+            <h2 class="mb-4">Удалить расчет?</h2>
+            <p>Вы уверены, что хотите удалить расчет для скважины <strong>{{ object.well_name }}</strong>?</p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Да, удалить</button>
+                <a href="{% url 'history' %}" class="btn btn-secondary">Отмена</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'hydrolab/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4 mt-5 text-center">
+            <h2 class="mb-3">Вы вышли из системы</h2>
+            <p class="text-muted">Спасибо за использование Hydrolab!</p>
+            <a href="{% url 'login' %}" class="btn btn-primary mt-3">Войти снова</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

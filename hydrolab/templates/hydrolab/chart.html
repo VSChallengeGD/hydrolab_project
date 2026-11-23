@@ -1,0 +1,75 @@
+{% extends 'hydrolab/base.html' %}
+
+{% block content %}
+<div class="card p-4 mt-4">
+    <h2 class="mb-4">График зависимости ECD от глубины</h2>
+
+    <div style="width: 100%; max-width: 800px; margin: 0 auto;">
+        <canvas id="ecdChart"></canvas>
+    </div>
+
+    <div class="mt-4 text-center">
+        <a href="{% url 'history' %}" class="btn btn-secondary">Назад к истории</a>
+    </div>
+</div>
+
+<!-- Подключаем библиотеку Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Получаем данные из Django
+    const depths = {{ depths|safe }};
+    const ecds = {{ ecds|safe }};
+
+    const ctx = document.getElementById('ecdChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: depths,
+            datasets: [
+                {
+                    label: 'Фактический ECD, кг/м³',
+                    data: ecds,
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.2)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 6,
+                    pointBackgroundColor: '#0d6efd'
+                },
+                {
+                    // Линия гидроразрыва (верхняя граница безопасности)
+                    label: 'Предел гидроразрыва (опасно выше)',
+                    data: depths.map(() => 1500), // Рисуем линию на уровне 1500
+                    borderColor: 'red',
+                    borderWidth: 2,
+                    borderDash: [5, 5], // Пунктирная линия
+                    pointRadius: 0
+                },
+                {
+                    // Линия пластового давления (нижняя граница безопасности)
+                    label: 'Пластовое давление (опасно ниже)',
+                    data: depths.map(() => 900), // Рисуем линию на уровне 900
+                    borderColor: 'orange',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    pointRadius: 0
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' },
+                title: { display: true, text: 'Профиль ECD и коридор безопасности' }
+            },
+            scales: {
+                x: { title: { display: true, text: 'Глубина (м)' } },
+                y: { title: { display: true, text: 'ECD (кг/м³)' } }
+            }
+        }
+    });
+</script>
+{% endblock %}
